@@ -32,7 +32,7 @@ except ImportError as e:
     print('Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
     raise e
 
-MODEL_FOLDER = "/home/gx/openpose/models/"
+MODEL_FOLDER = "/home/daniel/Git/openpose/models/"
 
 body_kp_id_to_name = {
     0: "Nose",

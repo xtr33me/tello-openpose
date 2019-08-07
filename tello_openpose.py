@@ -122,8 +122,8 @@ def main(use_multiprocessing=False, log_level=None):
         child_cnx = None
 
     tello = TelloController(use_face_tracking=True, 
-                            kbd_layout="AZERTY", 
-                            write_log_data=False, 
+                            kbd_layout="QWERTY", 
+                            write_log_data=True, 
                             log_level=log_level, child_cnx=child_cnx)
    
     first_frame = True  
@@ -209,7 +209,7 @@ class TelloController(object):
         self.record = False
         self.keydown = False
         self.date_fmt = '%Y-%m-%d_%H%M%S'
-        self.drone = tellopy.Tello(start_recv_thread=not self.use_multiprocessing)
+        self.drone = tellopy.Tello()#start_recv_thread=not self.use_multiprocessing)
         self.axis_command = {
             "yaw": self.drone.clockwise,
             "roll": self.drone.right,
@@ -310,7 +310,7 @@ class TelloController(object):
         self.scheduled_takeoff = None
         # When in trackin mode, but no body is detected in current frame,
         # we make the drone rotate in the hope to find some body
-        # The rotation is done in the same direction as the last rotation done
+        # The rotation is donpe in the same direction as the last rotation done
         self.body_in_prev_frame = False
         self.timestamp_no_body = time.time()
         self.last_rotation_is_cw = True
@@ -329,7 +329,8 @@ class TelloController(object):
 
         self.drone.subscribe(self.drone.EVENT_FLIGHT_DATA,
                              self.flight_data_handler)
-        self.drone.subscribe(self.drone.EVENT_LOG_DATA,
+        if hasattr(self.drone, 'EVENT_LOG_DATA'):
+            self.drone.subscribe(self.drone.EVENT_LOG_DATA,
                              self.log_data_handler)
         self.drone.subscribe(self.drone.EVENT_FILE_RECEIVED,
                              self.handle_flight_received)
@@ -1001,4 +1002,4 @@ if __name__ == '__main__':
     ap.add_argument("-2","--multiprocess", action='store_true', help="use 2 processes to share the workload (instead of 1)")
     args=ap.parse_args()
 
-    main(use_multiprocessing=args.multiprocess, log_level=args.log_level)
+    main(use_multiprocessing=args.multiprocess, log_level='debug')#args.log_level)
